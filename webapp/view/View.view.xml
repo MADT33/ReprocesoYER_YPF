@@ -1,0 +1,203 @@
+<mvc:View
+  controllerName="ypf.zz1com741lm4free2.controller.View"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:smartFilter="sap.ui.comp.smartfilterbar"
+  xmlns:smartField="sap.ui.comp.smartfield"
+  xmlns:core="sap.ui.core"
+  xmlns:table="sap.ui.table"
+  xmlns:semantic="sap.f.semantic">
+
+  <semantic:SemanticPage
+    id="mySemanticPage"
+    title="Demo Semantic Page"
+    showFooter="false"
+    fitContainer="true">
+
+    <!-- Header con filtros y botón GO -->
+    <semantic:headerContent>
+    
+
+  
+
+
+    
+      <HBox justifyContent="SpaceBetween" wrap="Wrap" class="sapUiTinyMarginBeginEnd sapUiTinyMarginTop sapUiTinyMarginBottom">
+
+        <HBox wrap="Wrap" alignItems="Center">
+          <VBox class="sapUiTinyMarginEnd" width="10rem">
+            <Label text="Desde" labelFor="inputDesde" required="true"/>
+            <DatePicker id="inputDesde" placeholder="Fecha desde" required="true" valueFormat="yyyyMMdd" displayFormat="dd/MM/yyyy" width="100%"/>
+          </VBox>
+
+          <VBox class="sapUiTinyMarginEnd" width="10rem">
+            <Label text="Hasta" labelFor="inputHasta" required="true"/>
+            <DatePicker id="inputHasta" placeholder="Fecha hasta" required="true" displayFormat="dd/MM/yyyy" valueFormat="yyyyMMdd" width="100%"/>
+          </VBox>
+
+          <VBox class="sapUiTinyMarginEnd" width="10rem">
+            <Label text="Cliente"/>
+          <MultiInput
+              id="multiInputCliente"
+              placeholder="Seleccionar clientes"
+              valueHelpOnly="true"
+              showValueHelp="true"
+              valueHelpRequest=".onValueHelpCliente"
+              width="100%" />
+          </VBox>
+
+          <VBox class="sapUiTinyMarginEnd" width="10rem">
+           <Label text="Contrato" />
+          <MultiInput
+              id="inputContrato"
+              placeholder="Selec Contrato"
+              valueHelpOnly="true"
+              showValueHelp="true"
+              width="100%"
+              valueHelpRequest=".onValueHelpContrato">
+          </MultiInput>
+          </VBox>
+
+            <VBox class="sapUiTinyMarginEnd" width="10rem">
+        <Label text="Estado" />
+      <ComboBox id="comboEstado" width="100%" selectedKey="SinGenerar">
+        <core:Item key="" text="" />
+      <core:Item key="SinGenerar" text="Sin Generar" />
+       <core:Item key="Generado" text="Generado" />
+      <core:Item key="EnError" text="Error" />
+      <core:Item key="Cancelado" text="Cancelado" />
+      </ComboBox>
+       </VBox>
+
+
+
+
+
+
+        </HBox>
+
+        <VBox alignItems="End" width="10rem">
+          <Label text=" "/>
+          <Button text="Ir" press="onGoPress" type="Emphasized" width="100%"/>
+        </VBox>
+      </HBox>
+
+      <HBox class="miBotonAzul sapUiMediumMarginTop sapUiTinyMarginBeginEnd"  justifyContent="SpaceBetween" width="100%">
+         <Button text="Cancelar Resumen" class="miBotonAzul"  type="Transparent" width="10rem"  press="onCancelarResumen"/>
+        <Button text="Generar Resumen" class="miBotonAzul" type="Transparent" width="10rem"  press="onGenerarResumen"/>
+        <Button text="Enviar a Everillion" class="miBotonAzul" type="Transparent" width="10rem" press="onEnviarAEverillion"/>
+        <Button text="Enviar a PDC"  class="miBotonAzul" type="Transparent" width="10rem" press="onEnviarAPDC"/>
+        <Button text="Enviar por Mail" class="miBotonAzul" type="Transparent" width="10rem" press="onEnviarPorMail"/>
+        <Button text="Descargar PDF" class="miBotonAzul"  type="Transparent" width="10rem" press="onDescargarPDF"/>
+       
+      </HBox>
+    </semantic:headerContent>
+
+    <!-- Contenido principal -->
+    <semantic:content>
+      <table:Table
+        id="tablaContratos"
+        rows="{ModelContract>/results}"
+        visibleRowCount="10"
+        selectionMode="MultiToggle"
+        enableColumnReordering="true"
+        width="100%"
+        columnHeaderVisible="true">
+
+        <table:columns>
+          <table:Column label="Des Factura" sortProperty="DesFactura" filterProperty="DesFactura" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>DesFactura}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Contrato" sortProperty="Contrato" filterProperty="Contrato" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>Contrato}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Fecha Cierre" sortProperty="FechaCierre" filterProperty="FechaCierre" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>FechaCierre}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Fecha Venc. Resumen" sortProperty="FechaVencResu" filterProperty="FechaVencResu" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>FechaVencResu}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Status Resumen" sortProperty="StatusRes" filterProperty="StatusRes" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>StatusRes}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Fecha Emisión Resumen" sortProperty="FechaEmRes"  filterProperty="FechaEmRes" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>FechaEmRes}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Periodo" sortProperty="Periodo"  filterProperty="Periodo" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>Periodo}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Solicitante" sortProperty="Solicitante" filterProperty="Solicitante" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>Solicitante}" />
+            </table:template>
+          </table:Column>
+
+                     <table:Column label="Num Doc Sellos" sortProperty="NunDocSellos" filterProperty="NunDocSellos" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>NunDocSellos}" />
+            </table:template>
+          </table:Column>
+
+
+
+          <table:Column label="Ejercicio Doc. Sellos"  sortProperty="EjercicioDocSellos" filterProperty="EjercicioDocSellos" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>EjercicioDocSellos}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Fecha Doc. Sellos"  sortProperty="FechaDocSellos" filterProperty="FechaDocSellos" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>FechaDocSellos}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Res. Env. Everillion" sortProperty="ResEnvEverillion" filterProperty="ResEnvEverillion" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>ResEnvEverillion}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Res. Env. PDC" sortProperty="ResEnvPDC" filterProperty="ResEnvPDC" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>ResEnvPDC}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Usuario" sortProperty="Usuario" filterProperty="Usuario" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>Usuario}" />
+            </table:template>
+          </table:Column>
+
+          <table:Column label="Env. Mail" sortProperty="EnvMail"  filterProperty="EnvMail" filterType="string" width="7rem">
+            <table:template>
+              <Text text="{ModelContract>EnvMail}" />
+            </table:template>
+          </table:Column>
+        </table:columns>
+      </table:Table>
+    </semantic:content>
+  </semantic:SemanticPage>
+</mvc:View>

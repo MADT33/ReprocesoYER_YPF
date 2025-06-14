@@ -1,0 +1,13 @@
+/* Enter your custom styles here */
+
+/* Enter your custom styles here */
+
+.miBotonAzul .sapMBtnInner {
+    border: 2px solid #0a6ed1 !important; /* Azul Fiori clásico */
+    color: #0a6ed1 !important;
+    border-radius: 0.25rem; /* opcional para suavizar bordes */
+  }
+  
+  .miBotonAzul .sapMBtnContent {
+    color: #0a6ed1 !important;
+  }

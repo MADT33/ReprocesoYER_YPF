@@ -1,0 +1,15 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+  <SelectDialog
+      id="valueHelpContratoDialog"
+      title="Seleccionar Contrato"
+      multiSelect="true"
+      confirm="onValueHelpContratoConfirm"
+      cancel="onValueHelpContratoCancel"
+      search="onSearchContrato"
+      items="{/VHContratosSet}">
+    <StandardListItem
+        title="{Contrato}"
+        description="{Descripcion}"
+        icon="sap-icon://value-help" />
+  </SelectDialog>
+</core:FragmentDefinition>

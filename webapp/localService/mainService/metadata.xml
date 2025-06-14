@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="ZGW_COM741_GESTRES_CYER_SRV" xml:lang="es" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <Annotation Term="Core.SchemaVersion" String="1.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+            <EntityType Name="inDataInicial" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="FechaDesde"/>
+                    <PropertyRef Name="FechaHasta"/>
+                </Key>
+                <Property Name="FechaDesde" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaHasta" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Cliente" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Contrato" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Estado" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DesFactura" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaCierre" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaVencResu" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="StatusRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaEmRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Periodo" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Solicitante" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="NunDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EjercicioDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvEverillion" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvPDC" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Usuario" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EnvMail" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="GenerarResumen" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DesFactura"/>
+                </Key>
+                <Property Name="DesFactura" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Contrato" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaCierre" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaVencResu" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="StatusRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaEmRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Periodo" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Solicitante" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EjercicioDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvEverillion" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvPDC" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Usuario" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EnvMail" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Mensaje" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="EnviarEverillion" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DesFactura"/>
+                </Key>
+                <Property Name="DesFactura" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Contrato" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaCierre" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaVencResu" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="StatusRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaEmRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Periodo" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Solicitante" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EjercicioDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvEverillion" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvPDC" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Usuario" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EnvMail" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Mensajes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="EnviarPDC" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DesFactura"/>
+                </Key>
+                <Property Name="DesFactura" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Contrato" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaCierre" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaVencResu" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="StatusRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaEmRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Periodo" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Solicitante" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EjercicioDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvEverillion" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvPDC" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Usuario" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EnvMail" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Mensaje" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="CancelarResumen" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DesFactura"/>
+                </Key>
+                <Property Name="DesFactura" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Contrato" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaCierre" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaVencResu" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="StatusRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaEmRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Periodo" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Solicitante" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EjercicioDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvEverillion" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvPDC" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Usuario" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EnvMail" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Mensaje" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="EnviarPorMail" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DesFactura"/>
+                </Key>
+                <Property Name="DesFactura" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Contrato" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaCierre" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaVencResu" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="StatusRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaEmRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Periodo" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Solicitante" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EjercicioDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvEverillion" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvPDC" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Usuario" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EnvMail" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Mensaje" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="Header" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Key"/>
+                </Key>
+                <Property Name="Key" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="HeaderToGenerarResumenNav" Relationship="ZGW_COM741_GESTRES_CYER_SRV.HeaderToGenerarResumenAs" FromRole="FromRole_HeaderToGenerarResumenAs" ToRole="ToRole_HeaderToGenerarResumenAs"/>
+                <NavigationProperty Name="HeaderToCancelarResumenNav" Relationship="ZGW_COM741_GESTRES_CYER_SRV.HeaderToCancelarResumenAs" FromRole="FromRole_HeaderToCancelarResumenAs" ToRole="ToRole_HeaderToCancelarResumenAs"/>
+                <NavigationProperty Name="HeaderToEnviarEverillionNav" Relationship="ZGW_COM741_GESTRES_CYER_SRV.HeaderToEnviarEverillionAs" FromRole="FromRole_HeaderToEnviarEverillionAs" ToRole="ToRole_HeaderToEnviarEverillionAs"/>
+                <NavigationProperty Name="HeaderToEnviarPDCNav" Relationship="ZGW_COM741_GESTRES_CYER_SRV.HeaderToEnviarPDCAs" FromRole="FromRole_HeaderToEnviarPDCAs" ToRole="ToRole_HeaderToEnviarPDCAs"/>
+                <NavigationProperty Name="HeaderToEnviarPorMailNav" Relationship="ZGW_COM741_GESTRES_CYER_SRV.HeaderToEnviarPorMailAs" FromRole="FromRole_HeaderToEnviarPorMailAs" ToRole="ToRole_HeaderToEnviarPorMailAs"/>
+                <NavigationProperty Name="HeaderToDescargarPdfNav" Relationship="ZGW_COM741_GESTRES_CYER_SRV.HeaderToDescargarPdf" FromRole="FromRole_HeaderToDescargarPdf" ToRole="ToRole_HeaderToDescargarPdf"/>
+            </EntityType>
+            <EntityType Name="VHClientes" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Clientes"/>
+                </Key>
+                <Property Name="Clientes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Descripcion" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="VHContratos" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Contrato"/>
+                </Key>
+                <Property Name="Contrato" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Descripcion" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="DescargarPdf" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DesFactura"/>
+                </Key>
+                <Property Name="DesFactura" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Contrato" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaCierre" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaVencResu" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="StatusRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaEmRes" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Periodo" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Solicitante" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EjercicioDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FechaDocSellos" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvEverillion" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResEnvPDC" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Usuario" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EnvMail" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Mensaje" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="NombrePdf" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Pdf" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <Association Name="HeaderToCancelarResumenAs" sap:content-version="1">
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.Header" Multiplicity="1" Role="FromRole_HeaderToCancelarResumenAs"/>
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.CancelarResumen" Multiplicity="*" Role="ToRole_HeaderToCancelarResumenAs"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_HeaderToCancelarResumenAs">
+                        <PropertyRef Name="Key"/>
+                    </Principal>
+                    <Dependent Role="ToRole_HeaderToCancelarResumenAs">
+                        <PropertyRef Name="DesFactura"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="HeaderToEnviarEverillionAs" sap:content-version="1">
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.Header" Multiplicity="1" Role="FromRole_HeaderToEnviarEverillionAs"/>
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.EnviarEverillion" Multiplicity="*" Role="ToRole_HeaderToEnviarEverillionAs"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_HeaderToEnviarEverillionAs">
+                        <PropertyRef Name="Key"/>
+                    </Principal>
+                    <Dependent Role="ToRole_HeaderToEnviarEverillionAs">
+                        <PropertyRef Name="DesFactura"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="HeaderToEnviarPDCAs" sap:content-version="1">
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.Header" Multiplicity="1" Role="FromRole_HeaderToEnviarPDCAs"/>
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.EnviarPDC" Multiplicity="*" Role="ToRole_HeaderToEnviarPDCAs"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_HeaderToEnviarPDCAs">
+                        <PropertyRef Name="Key"/>
+                    </Principal>
+                    <Dependent Role="ToRole_HeaderToEnviarPDCAs">
+                        <PropertyRef Name="DesFactura"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="HeaderToEnviarPorMailAs" sap:content-version="1">
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.Header" Multiplicity="1" Role="FromRole_HeaderToEnviarPorMailAs"/>
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.EnviarPorMail" Multiplicity="*" Role="ToRole_HeaderToEnviarPorMailAs"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_HeaderToEnviarPorMailAs">
+                        <PropertyRef Name="Key"/>
+                    </Principal>
+                    <Dependent Role="ToRole_HeaderToEnviarPorMailAs">
+                        <PropertyRef Name="DesFactura"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="HeaderToDescargarPdf" sap:content-version="1">
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.Header" Multiplicity="1" Role="FromRole_HeaderToDescargarPdf"/>
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.DescargarPdf" Multiplicity="*" Role="ToRole_HeaderToDescargarPdf"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_HeaderToDescargarPdf">
+                        <PropertyRef Name="Key"/>
+                    </Principal>
+                    <Dependent Role="ToRole_HeaderToDescargarPdf">
+                        <PropertyRef Name="Contrato"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="HeaderToGenerarResumenAs" sap:content-version="1">
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.Header" Multiplicity="1" Role="FromRole_HeaderToGenerarResumenAs"/>
+                <End Type="ZGW_COM741_GESTRES_CYER_SRV.GenerarResumen" Multiplicity="*" Role="ToRole_HeaderToGenerarResumenAs"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_HeaderToGenerarResumenAs">
+                        <PropertyRef Name="Key"/>
+                    </Principal>
+                    <Dependent Role="ToRole_HeaderToGenerarResumenAs">
+                        <PropertyRef Name="DesFactura"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="ZGW_COM741_GESTRES_CYER_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="inDataInicialSet" EntityType="ZGW_COM741_GESTRES_CYER_SRV.inDataInicial" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="GenerarResumenSet" EntityType="ZGW_COM741_GESTRES_CYER_SRV.GenerarResumen" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="EnviarEverillionSet" EntityType="ZGW_COM741_GESTRES_CYER_SRV.EnviarEverillion" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="EnviarPDCSet" EntityType="ZGW_COM741_GESTRES_CYER_SRV.EnviarPDC" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="CancelarResumenSet" EntityType="ZGW_COM741_GESTRES_CYER_SRV.CancelarResumen" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="EnviarPorMailSet" EntityType="ZGW_COM741_GESTRES_CYER_SRV.EnviarPorMail" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="HeaderSet" EntityType="ZGW_COM741_GESTRES_CYER_SRV.Header" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="VHClientesSet" EntityType="ZGW_COM741_GESTRES_CYER_SRV.VHClientes" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="VHContratosSet" EntityType="ZGW_COM741_GESTRES_CYER_SRV.VHContratos" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="DescargarPdfSet" EntityType="ZGW_COM741_GESTRES_CYER_SRV.DescargarPdf" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <AssociationSet Name="HeaderToEnviarPorMailAsSet" Association="ZGW_COM741_GESTRES_CYER_SRV.HeaderToEnviarPorMailAs" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="HeaderSet" Role="FromRole_HeaderToEnviarPorMailAs"/>
+                    <End EntitySet="EnviarPorMailSet" Role="ToRole_HeaderToEnviarPorMailAs"/>
+                </AssociationSet>
+                <AssociationSet Name="HeaderToDescargarPdfSet" Association="ZGW_COM741_GESTRES_CYER_SRV.HeaderToDescargarPdf" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="HeaderSet" Role="FromRole_HeaderToDescargarPdf"/>
+                    <End EntitySet="DescargarPdfSet" Role="ToRole_HeaderToDescargarPdf"/>
+                </AssociationSet>
+                <AssociationSet Name="HeaderToEnviarEverillionAsSet" Association="ZGW_COM741_GESTRES_CYER_SRV.HeaderToEnviarEverillionAs" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="HeaderSet" Role="FromRole_HeaderToEnviarEverillionAs"/>
+                    <End EntitySet="EnviarEverillionSet" Role="ToRole_HeaderToEnviarEverillionAs"/>
+                </AssociationSet>
+                <AssociationSet Name="HeaderToEnviarPDCAsSet" Association="ZGW_COM741_GESTRES_CYER_SRV.HeaderToEnviarPDCAs" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="HeaderSet" Role="FromRole_HeaderToEnviarPDCAs"/>
+                    <End EntitySet="EnviarPDCSet" Role="ToRole_HeaderToEnviarPDCAs"/>
+                </AssociationSet>
+                <AssociationSet Name="HeaderToCancelarResumenAsSet" Association="ZGW_COM741_GESTRES_CYER_SRV.HeaderToCancelarResumenAs" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="HeaderSet" Role="FromRole_HeaderToCancelarResumenAs"/>
+                    <End EntitySet="CancelarResumenSet" Role="ToRole_HeaderToCancelarResumenAs"/>
+                </AssociationSet>
+                <AssociationSet Name="HeaderToGenerarResumenAsSet" Association="ZGW_COM741_GESTRES_CYER_SRV.HeaderToGenerarResumenAs" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="HeaderSet" Role="FromRole_HeaderToGenerarResumenAs"/>
+                    <End EntitySet="GenerarResumenSet" Role="ToRole_HeaderToGenerarResumenAs"/>
+                </AssociationSet>
+            </EntityContainer>
+            <atom:link rel="self" href="https://lm4onbtp:8443/sap/opu/odata/sap/ZGW_COM741_GESTRES_CYER_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="https://lm4onbtp:8443/sap/opu/odata/sap/ZGW_COM741_GESTRES_CYER_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

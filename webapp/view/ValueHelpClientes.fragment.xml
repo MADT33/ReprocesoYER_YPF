@@ -1,0 +1,15 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+  <SelectDialog
+      id="valueHelpDialogCliente"
+      title="Seleccionar Clientes"
+      multiSelect="true"
+      confirm="onValueHelpConfirm"
+      cancel="onValueHelpCancel"
+      search="onSearch" 
+      items="{/VHClientesSet}">
+    <StandardListItem
+        title="{Clientes}"
+        description="{Descripcion}"
+        icon="sap-icon://value-help" />
+  </SelectDialog>
+</core:FragmentDefinition>

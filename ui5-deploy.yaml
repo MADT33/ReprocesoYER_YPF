@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: ypf.zz1com741lm4free2
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: BAS_LM4clnt200
+          url: http://lm4onbtp:8443
+        app:
+          name: ZCOM741_GR_CUEN
+          description: Gestion de Resumenes de Cuenta
+          package: ZFIORI_F2
+          transport: LM4K908912
+        exclude:
+          - /test/
