@@ -11,3 +11,13 @@
   .miBotonAzul .sapMBtnContent {
     color: #0a6ed1 !important;
   }
+
+  .noMargins {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .sapFGridContainer, .sapUiContent {
+    margin: 0 !important;
+    padding: 0 !important;
+  }

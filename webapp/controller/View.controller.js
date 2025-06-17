@@ -14,7 +14,7 @@ sap.ui.define([
             onInit: function () {
 
 
-                
+
 
             },
 
@@ -49,6 +49,27 @@ sap.ui.define([
                     MessageToast.show("Por favor, completá las fechas obligatorias.");
                     return;
                 }
+
+
+                // *** NUEVA VALIDACIÓN: Fecha Desde no puede ser mayor que Fecha Hasta ***
+                if (oDesde > oHasta) {
+                    oInputDesde.setValueState("Error");
+                    oInputDesde.setValueStateText("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'");
+                    oInputHasta.setValueState("Error");
+                    oInputHasta.setValueStateText("La fecha 'Hasta' debe ser igual o mayor que la fecha 'Desde'");
+                    MessageToast.show("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'.");
+                    return;
+                } else {
+                    // Limpiar estados si está OK
+                    oInputDesde.setValueState("None");
+                    oInputDesde.setValueStateText("");
+                    oInputHasta.setValueState("None");
+                    oInputHasta.setValueStateText("");
+                }
+
+
+
+
 
                 // Validar diferencia máxima de 45 días
                 const iDiffMs = oHasta.getTime() - oDesde.getTime();
@@ -87,7 +108,7 @@ sap.ui.define([
                     FechaHasta: sHasta,
                     Cliente: sClientes,
                     Contrato: sContratos,
-                    Estado : sEstado 
+                    Estado: sEstado
                 };
 
                 const oModel = this.getOwnerComponent().getModel();
@@ -106,7 +127,7 @@ sap.ui.define([
                             "FechaDocSellos",
                             "FechaEmRes",
                             "FechaVencResu",
-                            "Periodo",                               
+                            "Periodo",
                             "ResEnvEverillion",
                             "ResEnvPDC",
                             "Solicitante",
@@ -144,25 +165,27 @@ sap.ui.define([
                     }
                 });
             },
-          
-           
-                _formatDate: function (oDate) {
-                    if (!oDate) return "";
-                
-                    const iYear = oDate.getFullYear();
-                    const iMonth = oDate.getMonth() + 1; // Meses van de 0 a 11
-                    const iDay = oDate.getDate();
-                
-                    const sMonth = iMonth < 10 ? "0" + iMonth : iMonth;
-                    const sDay = iDay < 10 ? "0" + iDay : iDay;
-                
-                    return `${iYear}${sMonth}${sDay}`; // yyyyMMdd
-                }
-            
+
+
+            _formatDate: function (oDate) {
+                if (!oDate) return "";
+
+                const iYear = oDate.getFullYear();
+                const iMonth = oDate.getMonth() + 1; // Meses van de 0 a 11
+                const iDay = oDate.getDate();
+
+                const sMonth = iMonth < 10 ? "0" + iMonth : iMonth;
+                const sDay = iDay < 10 ? "0" + iDay : iDay;
+
+                return `${iYear}${sMonth}${sDay}`; // yyyyMMdd
+            }
+
             ,
             // Función reutilizable
             _enviarContratos: function (sNavEntity, sSuccessMessage, sErrorMessage) {
                 const oView = this.getView();
+
+                oView.setBusy(true);
                 const oTable = oView.byId("tablaContratos");
                 const aSelectedIndices = oTable.getSelectedIndices();
                 const oModel = this.getOwnerComponent().getModel();
@@ -201,50 +224,89 @@ sap.ui.define([
                     Key: "x"
                 };
                 oPayload[sNavEntity] = aContratos;
+                that._pdfYaGenerado = false;
+
+                console.log(">>> Se llamó a oModel.create <<<");
 
                 oModel.create("/HeaderSet", oPayload, {
                     success: function (oData) {
+                        console.log(">>> Entró a success <<<");
+                             
+                        oView.setBusy(false);
+
+                        if (that._pdfYaGenerado) {
+                            console.warn(">>> Success duplicado, cancelado para evitar PDFs repetidos");
+                            return;
+                        }
+                        that._pdfYaGenerado = true;
 
                         var mensaje = null;
+
                         if (
+                            oData.HeaderToDescargarPdfNav &&
+                            Array.isArray(oData.HeaderToDescargarPdfNav.results) &&
+                            oData.HeaderToDescargarPdfNav.results.length > 0
+                        ) {
+                            const results = oData.HeaderToDescargarPdfNav.results;
+
+                            console.log(">>> Resultados recibidos (PDF):", results);
+                            console.log(">>> Cantidad real recibida:", results.length);
+
+                            const clavesUnicas = new Set();
+
+                            for (let i = 0; i < results.length; i++) {
+                                const item = results[i];
+                                const nombrePdf = item.NombrePdf;
+                                const pdfBase64 = item.Pdf;
+                                const mensajeItem = item.Mensaje;
+
+                                const clave = nombrePdf + "::" + pdfBase64;
+
+                                if (nombrePdf && pdfBase64) {
+                                    if (!clavesUnicas.has(clave)) {
+                                        clavesUnicas.add(clave);
+
+                                        console.log(`Generando PDF #${i + 1} -> Nombre: ${nombrePdf}`);
+                                        that._crearPdf(nombrePdf, pdfBase64);
+
+                                        if (!mensaje) {
+                                            mensaje = mensajeItem;
+                                        }
+                                    } else {
+                                        console.warn(`PDF duplicado evitado para: ${nombrePdf}`);
+                                    }
+                                } else {
+                                    console.warn(`PDF inválido o vacío en índice ${i}`);
+                                }
+                            }
+                        } else if (
                             oData.HeaderToCancelarResumenNav &&
                             Array.isArray(oData.HeaderToCancelarResumenNav.results) &&
                             oData.HeaderToCancelarResumenNav.results[0]
                         ) {
                             mensaje = oData.HeaderToCancelarResumenNav.results[0].Mensaje;
-                        
-                        } else if (
-                            oData.HeaderToDescargarPdfNav &&
-                            Array.isArray(oData.HeaderToDescargarPdfNav.results) &&
-                            oData.HeaderToDescargarPdfNav.results[0]
-                        ) {
-                            mensaje = oData.HeaderToDescargarPdfNav.results[0].Mensaje;
-                            var nombrePdf = oData.HeaderToDescargarPdfNav.results[0].NombrePdf;
-                            var pdfBase64  = oData.HeaderToDescargarPdfNav.results[0].Pdf;
-                        
-                            that._crearPdf(nombrePdf,  pdfBase64);
-                        
+
                         } else if (
                             oData.HeaderToEnviarEverillionNav &&
                             Array.isArray(oData.HeaderToEnviarEverillionNav.results) &&
                             oData.HeaderToEnviarEverillionNav.results[0]
                         ) {
                             mensaje = oData.HeaderToEnviarEverillionNav.results[0].Mensaje;
-                        
+
                         } else if (
                             oData.HeaderToEnviarPDCNav &&
                             Array.isArray(oData.HeaderToEnviarPDCNav.results) &&
                             oData.HeaderToEnviarPDCNav.results[0]
                         ) {
                             mensaje = oData.HeaderToEnviarPDCNav.results[0].Mensaje;
-                        
+
                         } else if (
                             oData.HeaderToEnviarPorMailNav &&
                             Array.isArray(oData.HeaderToEnviarPorMailNav.results) &&
                             oData.HeaderToEnviarPorMailNav.results[0]
                         ) {
                             mensaje = oData.HeaderToEnviarPorMailNav.results[0].Mensaje;
-                        
+
                         } else if (
                             oData.HeaderToGenerarResumenNav &&
                             Array.isArray(oData.HeaderToGenerarResumenNav.results) &&
@@ -252,63 +314,61 @@ sap.ui.define([
                         ) {
                             mensaje = oData.HeaderToGenerarResumenNav.results[0].Mensaje;
                         }
-                        
-                        // Mostrar mensaje
+
                         if (mensaje) {
                             sap.m.MessageBox.information(mensaje);
                         } else {
                             sap.m.MessageBox.information("Acción completada, pero no se devolvió un mensaje.");
                         }
-
-                     
                     },
+
                     error: function (oError) {
-                        MessageBox.error(sErrorMessage);
+                        MessageBox.error("Ocurrió un error al procesar la solicitud.");
                         console.error(oError);
                     }
                 });
             },
 
 
-            _crearPdf: function (nombrePdf, pdfBase64  ) {
+            _crearPdf: function (nombrePdf, pdfBase64) {
 
-               
-                    if (!pdfBase64 || typeof pdfBase64 !== "string" || pdfBase64.trim() === "") {
-                        sap.m.MessageBox.error("El contenido del PDF está vacío o es inválido.");
-                        return;
+
+                if (!pdfBase64 || typeof pdfBase64 !== "string" || pdfBase64.trim() === "") {
+                    sap.m.MessageBox.error("El contenido del PDF está vacío o es inválido.");
+                    return;
+                }
+
+                try {
+                    // Decodificar base64 a binario
+                    const byteCharacters = atob(pdfBase64);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
                     }
-                
-                    try {
-                        // Decodificar base64 a binario
-                        const byteCharacters = atob(pdfBase64);
-                        const byteNumbers = new Array(byteCharacters.length);
-                        for (let i = 0; i < byteCharacters.length; i++) {
-                            byteNumbers[i] = byteCharacters.charCodeAt(i);
-                        }
-                
-                        const byteArray = new Uint8Array(byteNumbers);
-                        const blob = new Blob([byteArray], { type: 'application/pdf' });
-                
-                        // Nombre del archivo, asegurando .pdf
-                        let safeName = nombrePdf && typeof nombrePdf === "string" ? nombrePdf.trim() : "archivo.pdf";
-                        if (!safeName.toLowerCase().endsWith(".pdf")) {
-                            safeName += ".pdf";
-                        }
-                
-                        // Crear enlace para descarga
-                        const link = document.createElement("a");
-                        link.href = URL.createObjectURL(blob);
-                        link.download = safeName;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        URL.revokeObjectURL(link.href);
-                
-                    } catch (err) {
-                        console.error("Error al crear el PDF:", err);
-                        sap.m.MessageBox.error("No se pudo generar el archivo PDF.");
+
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+                    // Nombre del archivo, asegurando .pdf
+                    let safeName = nombrePdf && typeof nombrePdf === "string" ? nombrePdf.trim() : "archivo.pdf";
+                    if (!safeName.toLowerCase().endsWith(".pdf")) {
+                        safeName += ".pdf";
                     }
-               
+
+                    // Crear enlace para descarga
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = safeName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+
+                } catch (err) {
+                    console.error("Error al crear el PDF:", err);
+                    sap.m.MessageBox.error("No se pudo generar el archivo PDF.");
+                }
+
 
 
             },
@@ -325,7 +385,7 @@ sap.ui.define([
                     );
                 }.bind(this));
             },
-            
+
             onEnviarAEverillion: function () {
                 this._confirmAndExecute("¿Está seguro de enviar a Everillion?", function () {
                     this._enviarContratos(
@@ -335,7 +395,7 @@ sap.ui.define([
                     );
                 }.bind(this));
             },
-            
+
             onEnviarAPDC: function () {
                 this._confirmAndExecute("¿Está seguro de enviar a PDC?", function () {
                     this._enviarContratos(
@@ -345,7 +405,7 @@ sap.ui.define([
                     );
                 }.bind(this));
             },
-            
+
             onEnviarPorMail: function () {
                 this._confirmAndExecute("¿Está seguro de enviar por mail?", function () {
                     this._enviarContratos(
@@ -355,7 +415,7 @@ sap.ui.define([
                     );
                 }.bind(this));
             },
-            
+
             onCancelarResumen: function () {
                 this._confirmAndExecute("¿Está seguro de cancelar el resumen?", function () {
                     this._enviarContratos(
@@ -365,7 +425,7 @@ sap.ui.define([
                     );
                 }.bind(this));
             },
-            
+
             onDescargarPDF: function () {
                 this._confirmAndExecute("¿Está seguro de descargar el PDF?", function () {
                     this._enviarContratos(
