@@ -2,99 +2,149 @@
   controllerName="ypf.zz1com741lm4free2.controller.View"
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
-  xmlns:smartFilter="sap.ui.comp.smartfilterbar"
-  xmlns:smartField="sap.ui.comp.smartfield"
+  xmlns:fb="sap.ui.comp.filterbar"
+  xmlns:svm="sap.ui.comp.smartvariants"
   xmlns:core="sap.ui.core"
   xmlns:table="sap.ui.table"
   xmlns:semantic="sap.f.semantic">
 
   <semantic:SemanticPage
     id="mySemanticPage"
-    title="Demo Semantic Page"
+    title="{i18n>Semantic_Page}"
     class="noMargins"
     showFooter="false"
     fitContainer="true">
 
-    <!-- Header con filtros y botón GO -->
     <semantic:headerContent>
-    
-
-  
-
 
     
-      <HBox justifyContent="SpaceBetween" wrap="Wrap" class="sapUiTinyMarginBeginEnd sapUiTinyMarginTop sapUiTinyMarginBottom">
+  <svm:SmartVariantManagement id="svm" showExecuteOnSelection="true" />
+ 
+      <Button
+        id="btnIr"
+        text="{i18n>Ir}"
+        type="Emphasized"
+        press=".onGoPress"
+        class="btnSmallWidth btnAlignRight"
+        width="5rem"
+      
+      />
 
-        <HBox wrap="Wrap" alignItems="Center">
-          <VBox class="sapUiTinyMarginEnd" width="10rem">
-            <Label text="Desde" labelFor="inputDesde" required="true"/>
-            <DatePicker id="inputDesde" placeholder="Fecha desde" required="true" valueFormat="yyyyMMdd" displayFormat="dd/MM/yyyy" width="100%"/>
-          </VBox>
 
-          <VBox class="sapUiTinyMarginEnd" width="10rem">
-            <Label text="Hasta" labelFor="inputHasta" required="true"/>
-            <DatePicker id="inputHasta" placeholder="Fecha hasta" required="true" displayFormat="dd/MM/yyyy" valueFormat="yyyyMMdd" width="100%"/>
-          </VBox>
+      
+  <fb:FilterBar
+    id="filterbar"
+    persistencyKey="myPersKey"
+    useToolbar="false"
+    showGoOnFB="true"
+    showGoButton="false"
+    showFilterConfiguration="false"
+    layoutMode="Compact"
+    search=".onGoPress"
+    filterChange=".onFilterChange"
+    afterVariantLoad=".onAfterVariantLoad"
+  >
+    <fb:filterGroupItems>
 
-          <VBox class="sapUiTinyMarginEnd" width="10rem">
-            <Label text="Cliente"/>
-          <MultiInput
-              id="multiInputCliente"
-              placeholder="Seleccionar clientes"
-              valueHelpOnly="true"
-              showValueHelp="true"
-              valueHelpRequest=".onValueHelpCliente"
-              width="100%" />
-          </VBox>
+      <fb:FilterGroupItem name="Desde" label="{i18n>Desde}" groupName="Group1" visibleInFilterBar="true">
+        <fb:control>
+          <DatePicker
+            id="inputDesde"
+            placeholder="Fecha desde"
+            required="true"
+            valueFormat="yyyyMMdd"
+            displayFormat="dd/MM/yyyy"
+            width="100%" />
+        </fb:control>
+      </fb:FilterGroupItem>
 
-          <VBox class="sapUiTinyMarginEnd" width="10rem">
-           <Label text="Contrato" />
+      <fb:FilterGroupItem name="Hasta" label="{i18n>Hasta}" groupName="Group1" visibleInFilterBar="true">
+        <fb:control>
+          <DatePicker
+            id="inputHasta"
+            placeholder="Fecha hasta"
+            required="true"
+            valueFormat="yyyyMMdd"
+            displayFormat="dd/MM/yyyy"
+            width="100%" />
+        </fb:control>
+      </fb:FilterGroupItem>
+
+      <fb:FilterGroupItem name="Cliente" label="{i18n>Des_Factura}" groupName="Group1" visibleInFilterBar="true">
+        <fb:control>
+        <MultiInput
+          id="multiInputCliente"
+          placeholder="Seleccionar"
+          showValueHelp="true"
+          change=".onMultiInputChange"
+          valueHelpRequest=".onValueHelpCliente"
+          width="100%"
+          suggestionItems="{
+          
+              path: '/VHClientesSet',
+              sorter: { path: 'Clientes' }
+          }">
+          <core:Item key="{Clientes}" text="{Clientes}" />
+        </MultiInput>
+       
+        </fb:control>
+      </fb:FilterGroupItem>
+
+      <fb:FilterGroupItem name="Contrato" label="{i18n>Contrato}" groupName="Group1" visibleInFilterBar="true">
+        <fb:control>
           <MultiInput
               id="inputContrato"
-              placeholder="Selec Contrato"
-              valueHelpOnly="true"
+              placeholder="Seleccionar"
               showValueHelp="true"
+              change=".onMultiInputChange"
+              valueHelpRequest=".onValueHelpContrato"
               width="100%"
-              valueHelpRequest=".onValueHelpContrato">
+              suggestionItems="{
+                  path: 'VHModel>/VHContratos',
+                  sorter: { path: 'VHModel>Contrato' }
+              }">
+              <core:Item key="{VHModel>Contrato}" text="{VHModel>Contrato}" />
           </MultiInput>
-          </VBox>
+        </fb:control>
+      </fb:FilterGroupItem>
 
-            <VBox class="sapUiTinyMarginEnd" width="10rem">
-        <Label text="Estado" />
-      <ComboBox id="comboEstado" width="100%" selectedKey="SinGenerar">
+
+
+            <fb:FilterGroupItem name="Estado" label="{i18n>Estado}" groupName="Group1" visibleInFilterBar="true">
+        <fb:control>
+         <ComboBox id="comboEstado"  selectedKey="SinGenerar">
         <core:Item key="" text="" />
-      <core:Item key="SinGenerar" text="Sin Generar" />
-       <core:Item key="Generado" text="Generado" />
-      <core:Item key="EnError" text="Error" />
-      <core:Item key="Cancelado" text="Cancelado" />
+      <core:Item key="SinGenerar" text="{i18n>Sin_Generar}" />
+       <core:Item key="Generado" text="{i18n>Generado}" />
+      <core:Item key="EnError" text="{i18n>Error}" />
+      <core:Item key="Cancelado" text="{i18n>Cancelado}" />
       </ComboBox>
-       </VBox>
+        </fb:control>
+      </fb:FilterGroupItem>
 
 
 
 
+      
+
+       
+    </fb:filterGroupItems>
+  </fb:FilterBar>
 
 
-        </HBox>
-
-        <VBox alignItems="End" width="10rem">
-          <Label text=" "/>
-          <Button text="Ir" press="onGoPress" type="Emphasized" width="100%"/>
-        </VBox>
-      </HBox>
 
       <HBox class="miBotonAzul sapUiMediumMarginTop sapUiTinyMarginBeginEnd"  justifyContent="SpaceBetween" width="100%">
-         <Button text="Cancelar Resumen" class="miBotonAzul"  type="Transparent" width="10rem"  press="onCancelarResumen"/>
-        <Button text="Generar Resumen" class="miBotonAzul" type="Transparent" width="10rem"  press="onGenerarResumen"/>
-        <Button text="Enviar a Everillion" class="miBotonAzul" type="Transparent" width="10rem" press="onEnviarAEverillion"/>
-        <Button text="Enviar a PDC"  class="miBotonAzul" type="Transparent" width="10rem" press="onEnviarAPDC"/>
-        <Button text="Enviar por Mail" class="miBotonAzul" type="Transparent" width="10rem" press="onEnviarPorMail"/>
-        <Button text="Descargar PDF" class="miBotonAzul"  type="Transparent" width="10rem" press="onDescargarPDF"/>
+         <Button text="{i18n>Cancelar_Resumen}" class="miBotonAzul"  type="Transparent" width="10rem"  press="onCancelarResumen"/>
+        <Button text="{i18n>Generar_Resumen}" class="miBotonAzul" type="Transparent" width="10rem"  press="onGenerarResumen"/>
+        <Button text="{i18n>Enviar_a_Everillion}" class="miBotonAzul" type="Transparent" width="10rem" press="onEnviarAEverillion"/>
+        <Button text="{i18n>Enviar_a_PDC}"  class="miBotonAzul" type="Transparent" width="10rem" press="onEnviarAPDC"/>
+        <Button text="{i18n>Enviar_por_Mail}" class="miBotonAzul" type="Transparent" width="10rem" press="onEnviarPorMail"/>
+        <Button text="{i18n>Descargar_PDF}" class="miBotonAzul"  type="Transparent" width="10rem" press="onDescargarPDF"/>
        
       </HBox>
     </semantic:headerContent>
 
-    <!-- Contenido principal -->
+   
     <semantic:content>
       <table:Table
         id="tablaContratos"
@@ -106,55 +156,55 @@
         columnHeaderVisible="true">
 
         <table:columns>
-          <table:Column label="Des Factura" sortProperty="DesFactura" filterProperty="DesFactura" filterType="string" width="7rem">
+          <table:Column label="{i18n>Des_Factura}" sortProperty="DesFactura" filterProperty="DesFactura" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>DesFactura}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Contrato" sortProperty="Contrato" filterProperty="Contrato" filterType="string" width="7rem">
+          <table:Column label="{i18n>Contrato}" sortProperty="Contrato" filterProperty="Contrato" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>Contrato}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Fecha Cierre" sortProperty="FechaCierre" filterProperty="FechaCierre" filterType="string" width="7rem">
+          <table:Column label="{i18n>Fecha_Cierre}" sortProperty="FechaCierre" filterProperty="FechaCierre" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>FechaCierre}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Fecha Venc. Resumen" sortProperty="FechaVencResu" filterProperty="FechaVencResu" filterType="string" width="7rem">
+          <table:Column label="{i18n>Fecha_Venc._Resumen}" sortProperty="FechaVencResu" filterProperty="FechaVencResu" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>FechaVencResu}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Status Resumen" sortProperty="StatusRes" filterProperty="StatusRes" filterType="string" width="7rem">
+          <table:Column label="{i18n>Status_Resumen}" sortProperty="StatusRes" filterProperty="StatusRes" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>StatusRes}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Fecha Emisión Resumen" sortProperty="FechaEmRes"  filterProperty="FechaEmRes" filterType="string" width="7rem">
+          <table:Column label="{i18n>Fecha_Emision_Resumen}" sortProperty="FechaEmRes"  filterProperty="FechaEmRes" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>FechaEmRes}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Periodo" sortProperty="Periodo"  filterProperty="Periodo" filterType="string" width="7rem">
+          <table:Column label="{i18n>Periodo}" sortProperty="Periodo"  filterProperty="Periodo" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>Periodo}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Solicitante" sortProperty="Solicitante" filterProperty="Solicitante" filterType="string" width="7rem">
+          <table:Column label="{i18n>Solicitante}" sortProperty="Solicitante" filterProperty="Solicitante" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>Solicitante}" />
             </table:template>
           </table:Column>
 
-                     <table:Column label="Num Doc Sellos" sortProperty="NunDocSellos" filterProperty="NunDocSellos" filterType="string" width="7rem">
+                     <table:Column label="{i18n>Num_Doc_Sellos}" sortProperty="NunDocSellos" filterProperty="NunDocSellos" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>NunDocSellos}" />
             </table:template>
@@ -162,37 +212,37 @@
 
 
 
-          <table:Column label="Ejercicio Doc. Sellos"  sortProperty="EjercicioDocSellos" filterProperty="EjercicioDocSellos" filterType="string" width="7rem">
+          <table:Column label="{i18n>Ejercicio_Doc._Sellos}"  sortProperty="EjercicioDocSellos" filterProperty="EjercicioDocSellos" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>EjercicioDocSellos}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Fecha Doc. Sellos"  sortProperty="FechaDocSellos" filterProperty="FechaDocSellos" filterType="string" width="7rem">
+          <table:Column label="{i18n>Fecha_Doc._Sellos}"  sortProperty="FechaDocSellos" filterProperty="FechaDocSellos" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>FechaDocSellos}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Res. Env. Everillion" sortProperty="ResEnvEverillion" filterProperty="ResEnvEverillion" filterType="string" width="7rem">
+          <table:Column label="{i18n>Res._Env._Everillion}" sortProperty="ResEnvEverillion" filterProperty="ResEnvEverillion" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>ResEnvEverillion}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Res. Env. PDC" sortProperty="ResEnvPDC" filterProperty="ResEnvPDC" filterType="string" width="7rem">
+          <table:Column label="{i18n>Res._Env._PDC}" sortProperty="ResEnvPDC" filterProperty="ResEnvPDC" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>ResEnvPDC}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Usuario" sortProperty="Usuario" filterProperty="Usuario" filterType="string" width="7rem">
+          <table:Column label="{i18n>Usuario}" sortProperty="Usuario" filterProperty="Usuario" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>Usuario}" />
             </table:template>
           </table:Column>
 
-          <table:Column label="Env. Mail" sortProperty="EnvMail"  filterProperty="EnvMail" filterType="string" width="7rem">
+          <table:Column label="{i18n>Env._Mail}" sortProperty="EnvMail"  filterProperty="EnvMail" filterType="string" width="7rem">
             <table:template>
               <Text text="{ModelContract>EnvMail}" />
             </table:template>

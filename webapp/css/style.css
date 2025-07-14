@@ -1,23 +1,55 @@
 /* Enter your custom styles here */
 
-/* Enter your custom styles here */
-
 .miBotonAzul .sapMBtnInner {
-    border: 2px solid #0a6ed1 !important; /* Azul Fiori clásico */
-    color: #0a6ed1 !important;
-    border-radius: 0.25rem; /* opcional para suavizar bordes */
-  }
-  
-  .miBotonAzul .sapMBtnContent {
-    color: #0a6ed1 !important;
-  }
+  border: 2px solid #0a6ed1 !important; /* Azul Fiori clásico */
+  color: #0a6ed1 !important;
+  border-radius: 0.25rem; /* opcional para suavizar bordes */
+}
 
-  .noMargins {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-  
-  .sapFGridContainer, .sapUiContent {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
+.miBotonAzul .sapMBtnContent {
+  color: #0a6ed1 !important;
+}
+
+/* Ocultar la etiqueta (label) del FilterGroupItem */
+#btnIr ~ .sapUiFltLabel,
+#btnIr ~ label,
+#btnIr .sapMLabel {
+display: none !important;
+}
+
+/* Ajustar ancho del botón */
+.btnSmallWidth {
+width: 3rem !important;  /* o el ancho que prefieras */
+min-width: unset !important;
+padding: 0.25rem 0.5rem !important;
+
+}
+
+.btnAlignRight {
+  float: right;
+  margin-right: 0.5rem;
+}
+
+
+#application-ypfzz1com742lm4free2-display-component---View1--filterbar-filterItem-Group1-btnIr .sapMLabelColonAndRequired {
+display: none !important;
+visibility: hidden !important;
+}
+
+#application-ypfzz1com742lm4free2-display-component---View1--filterbar-filterItem-Group1-btnIr {
+width: 0 !important;
+margin: 0 !important;
+padding: 0 !important;
+}
+
+.customMarginLeft {
+
+margin-left: 40.5rem !important;
+width: 30rem !important;
+}
+
+
+.sapUiCompFilterBar .sapMFilterBarBasicArea .sapMFilterBarItem:nth-child(5) .sapMLabelColonAndRequired {
+display: none !important;
+visibility: hidden !important;
+}

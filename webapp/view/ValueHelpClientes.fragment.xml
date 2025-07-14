@@ -1,15 +1,15 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
-  <SelectDialog
-      id="valueHelpDialogCliente"
-      title="Seleccionar Clientes"
-      multiSelect="true"
-      confirm="onValueHelpConfirm"
-      cancel="onValueHelpCancel"
-      search="onSearch" 
-      items="{/VHClientesSet}">
-    <StandardListItem
-        title="{Clientes}"
-        description="{Descripcion}"
-        icon="sap-icon://value-help" />
-  </SelectDialog>
+<SelectDialog
+    id="valueHelpDialogCliente"
+    title="{i18n>Seleccionar_Clientes}"
+    multiSelect="true"
+    confirm="onValueHelpCancel"
+    cancel="onValueHelpCancel"
+    search="onSearch"
+    items="{VHModel>/VHClientes}">
+  <StandardListItem
+      title="{VHModel>Clientes}"
+      description="{VHModel>Descripcion}"
+      icon="sap-icon://value-help" />
+</SelectDialog>
 </core:FragmentDefinition>

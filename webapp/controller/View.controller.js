@@ -5,17 +5,146 @@ sap.ui.define([
     "sap/ui/model/FilterOperator",
     "sap/ui/core/Fragment",
     "sap/m/MessageToast",
-    "sap/m/MessageBox"
+    "sap/m/MessageBox",
+    "sap/ui/export/Spreadsheet",
+    "sap/ui/export/library",
+    'sap/ui/comp/smartvariants/PersonalizableInfo'
 ],
-    function (Controller, JSONModel, Filter, FilterOperator, Fragment, MessageToast, MessageBox) {
+    function (Controller, JSONModel, Filter, FilterOperator, Fragment, MessageToast, MessageBox,
+        Spreadsheet, library, PersonalizableInfo
+    ) {
         "use strict";
 
         return Controller.extend("ypf.zz1com741lm4free2.controller.View", {
             onInit: function () {
 
+                var oView = this.getView();
+                var oDataModel = this.getOwnerComponent().getModel();
+                var that = this;
+
+                oDataModel.read("/VHClientesSet", {
+                    success: function (oData) {
+                        var oVHModel = new sap.ui.model.json.JSONModel();
+                        oVHModel.setData({ VHClientes: oData.results });
+                        oView.setModel(oVHModel, "VHModel");
+                    },
+                    error: function () {
+                        sap.m.MessageToast.show("Error al cargar clientes");
+                    }
+                });
+
+                oDataModel.read("/VHContratosSet", {
+                    success: function (oData) {
+
+                        var oVHModel = oView.getModel("VHModel");
+
+                        if (!oVHModel) {
+
+                            oVHModel = new sap.ui.model.json.JSONModel({
+                                VHContratos: oData.results
+                            });
+                            oView.setModel(oVHModel, "VHModel");
+                        } else {
+
+                            var oDataNow = oVHModel.getData();
+                            oDataNow.VHContratos = oData.results;
+                            oVHModel.setData(oDataNow);
+                        }
+                    },
+                    error: function () {
+                       
+                        MessageToast.show(this._getText("msg.error.erroCarcarContrato"));
+                    }
+                });
+
+
+                this.oSmartVariantManagement = this.getView().byId("svm");
+                this.oFilterBar = this.getView().byId("filterbar");
+
+
+                this.oFilterBar.registerFetchData(this.fetchData.bind(this));
+                this.oFilterBar.registerApplyData(this.applyData.bind(this));
+                this.oFilterBar.registerGetFiltersWithValues(this.getFiltersWithValues.bind(this));
+
+
+                var oPersInfo = new PersonalizableInfo({
+                    type: "filterBar",
+                    keyName: "persistencyKey",
+                    dataSource: "",
+                    control: this.oFilterBar
+                });
+
+                this.oSmartVariantManagement.addPersonalizableControl(oPersInfo);
+                this.oSmartVariantManagement.initialise(function () { }, this.oFilterBar);
 
 
 
+
+            },
+            _getText: function (sKey, aArgs) {
+                const oModel = this.getView().getModel("i18n");
+                if (!oModel) {
+                    
+                    return sKey; 
+                }
+                const oBundle = oModel.getResourceBundle();
+                return oBundle.getText(sKey, aArgs);
+            },
+            fetchData: function () {
+                const oView = this.getView();
+                return {
+                    inputDesde: oView.byId("inputDesde").getValue(),
+                    inputHasta: oView.byId("inputHasta").getValue()
+                };
+            },
+
+            applyData: function (oData) {
+                const oView = this.getView();
+
+                if (oData.inputDesde !== undefined) {
+                    oView.byId("inputDesde").setValue(oData.inputDesde);
+                }
+
+                if (oData.inputHasta !== undefined) {
+                    oView.byId("inputHasta").setValue(oData.inputHasta);
+                }
+            },
+
+            onMultiInputChange: function (oEvent) {
+                const oInput = oEvent.getSource();
+                const sValue = oEvent.getParameter("value");
+
+                if (!sValue) return;
+
+                const aValues = sValue
+                    .split(/[\n,; ]+/)
+                    .map(s => s.trim())
+                    .filter(Boolean);
+
+                oInput.setValue("");
+
+                aValues.forEach(sVal => {
+                    const oToken = new sap.m.Token({ key: sVal, text: sVal });
+                    oInput.addToken(oToken);
+                });
+
+            },
+            getFiltersWithValues: function () {
+                const oView = this.getView();
+                const aFilters = [];
+
+                const sDesde = oView.byId("inputDesde").getValue();
+                const sHasta = oView.byId("inputHasta").getValue();
+
+                if (sDesde) {
+                    aFilters.push(new Filter("fechaDesde", FilterOperator.GE, sDesde));
+                }
+
+                if (sHasta) {
+                    aFilters.push(new Filter("fechaHasta", FilterOperator.LE, sHasta));
+                }
+
+                return aFilters;
             },
 
             onGoPress: function () {
@@ -28,10 +157,11 @@ sap.ui.define([
 
                 let bValid = true;
 
-                // Validar fechas obligatorias
+
                 if (!oDesde) {
                     oInputDesde.setValueState("Error");
-                    oInputDesde.setValueStateText("La fecha 'Desde' es obligatoria");
+                   
+                    oInputDesde.setValueStateText(this._getText("msg.error.fechaDesdeObligatoria"));
                     bValid = false;
                 } else {
                     oInputDesde.setValueState("None");
@@ -39,28 +169,30 @@ sap.ui.define([
 
                 if (!oHasta) {
                     oInputHasta.setValueState("Error");
-                    oInputHasta.setValueStateText("La fecha 'Hasta' es obligatoria");
+                    oInputHasta.setValueStateText(this._getText("msg.error.fechaHastaObligatoria"));
+                   
                     bValid = false;
                 } else {
                     oInputHasta.setValueState("None");
                 }
 
                 if (!bValid) {
-                    MessageToast.show("Por favor, completá las fechas obligatorias.");
+                    MessageToast.show(this._getText("msg.toast.fechasObligatorias"));
+                   
                     return;
                 }
 
 
-                // *** NUEVA VALIDACIÓN: Fecha Desde no puede ser mayor que Fecha Hasta ***
+
                 if (oDesde > oHasta) {
                     oInputDesde.setValueState("Error");
-                    oInputDesde.setValueStateText("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'");
+                    oInputDesde.setValueStateText(this._getText("msg.error.fechaDesdeMayor"));
                     oInputHasta.setValueState("Error");
-                    oInputHasta.setValueStateText("La fecha 'Hasta' debe ser igual o mayor que la fecha 'Desde'");
-                    MessageToast.show("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'.");
+                    oInputHasta.setValueStateText(this._getText("msg.error.fechaHastaMenor"));
+                    MessageToast.show(this._getText("msg.toast.fechaDesdeMayor"));
                     return;
                 } else {
-                    // Limpiar estados si está OK
+
                     oInputDesde.setValueState("None");
                     oInputDesde.setValueStateText("");
                     oInputHasta.setValueState("None");
@@ -71,14 +203,16 @@ sap.ui.define([
 
 
 
-                // Validar diferencia máxima de 45 días
+
                 const iDiffMs = oHasta.getTime() - oDesde.getTime();
                 const iDiffDays = iDiffMs / (1000 * 60 * 60 * 24);
 
                 if (iDiffDays > 45) {
                     oInputHasta.setValueState("Error");
-                    oInputHasta.setValueStateText("La fecha 'Hasta' no puede superar los 45 días desde la fecha 'Desde'");
-                    MessageToast.show("La fecha 'Hasta' no puede superar los 45 días desde 'Desde'.");
+                   
+                    oInputHasta.setValueStateText(this._getText("msg.error.fechaHastaMayor"));
+                    MessageToast.show(this._getText("msg.error.fechaHastaMayor"));
+                   
                     return;
                 } else {
                     oInputHasta.setValueState("None");
@@ -87,7 +221,7 @@ sap.ui.define([
                 const sDesde = this._formatDate(oDesde);
                 const sHasta = this._formatDate(oHasta);
 
-                // Obtener valores de los MultiInput
+
                 const aClientesTokens = oView.byId("multiInputCliente").getTokens();
                 const aContratosTokens = oView.byId("inputContrato").getTokens();
 
@@ -95,13 +229,7 @@ sap.ui.define([
                 const sContratos = aContratosTokens.map(t => t.getKey()).join(",");
                 const sEstado = oView.byId("comboEstado").getValue();
 
-                // Mensaje informativo si están vacíos, pero sin bloquear
-                /*if (aClientesTokens.length === 0) {
-                    MessageToast.show("Advertencia: no se seleccionó ningún Cliente.");
-                }
-                if (aContratosTokens.length === 0) {
-                    MessageToast.show("Advertencia: no se seleccionó ningún Contrato.");
-                }*/
+
 
                 const oPayload = {
                     FechaDesde: sDesde,
@@ -115,55 +243,43 @@ sap.ui.define([
 
                 oModel.create("/inDataInicialSet", oPayload, {
                     success: function (oData) {
-                        const oRawData = oData; // Esto es lo que devuelve tu OData
+                        const raw = oData;
 
-                        // Lista de campos a procesar
-                        const aFields = [
-                            "Contrato",
-                            "DesFactura",
-                            "EjercicioDocSellos",
-                            "EnvMail",
-                            "FechaCierre",
-                            "FechaDocSellos",
-                            "FechaEmRes",
-                            "FechaVencResu",
-                            "Periodo",
-                            "ResEnvEverillion",
-                            "ResEnvPDC",
-                            "Solicitante",
-                            "StatusRes",
-                            "Usuario"
-                        ];
+                        const parseField = key => (raw[key] || "").split(",");
 
-                        // Convertimos cada campo en un array de valores (split por coma, filtrando vacíos)
-                        const aParsedFields = {};
-                        aFields.forEach(field => {
-                            const sRaw = oRawData[field] || "";
-                            aParsedFields[field] = sRaw.split(",").filter(item => item !== "");
-                        });
+                        const results = [];
+                        const totalItems = parseField("Contrato").length;
 
-                        // Determinamos la cantidad de registros (usamos "Contrato" como referencia)
-                        const iLength = aParsedFields["Contrato"].length;
-
-                        // Armamos el array de resultados
-                        const aResults = [];
-                        for (let i = 0; i < iLength; i++) {
-                            const oRow = {};
-                            aFields.forEach(field => {
-                                oRow[field] = aParsedFields[field][i] || "";
+                        for (let i = 0; i < totalItems; i++) {
+                            results.push({
+                                Contrato: parseField("Contrato")[i] || "",
+                                DesFactura: parseField("DesFactura")[i] || "",
+                                EjercicioDocSellos: parseField("EjercicioDocSellos")[i] || "",
+                                EnvMail: parseField("EnvMail")[i] || "",
+                                FechaCierre: parseField("FechaCierre")[i] || "",
+                                FechaDocSellos: parseField("FechaDocSellos")[i] || "",
+                                FechaEmRes: parseField("FechaEmRes")[i] || "",
+                                FechaVencResu: parseField("FechaVencResu")[i] || "",
+                                NunDocSellos: parseField("NunDocSellos")[i] || "",
+                                Periodo: parseField("Periodo")[i] || "",
+                                ResEnvEverillion: parseField("ResEnvEverillion")[i] || "",
+                                ResEnvPDC: parseField("ResEnvPDC")[i] || "",
+                                Solicitante: parseField("Solicitante")[i] || "",
+                                StatusRes: parseField("StatusRes")[i] || "",
+                                Usuario: parseField("Usuario")[i] || ""
                             });
-                            aResults.push(oRow);
                         }
 
-                        // Creamos el modelo JSON con propiedad `results` y lo asignamos
-                        const oModelContract = new sap.ui.model.json.JSONModel({ results: aResults });
-                        oView.setModel(oModelContract, "ModelContract");
-
+                        const oJsonModel = new sap.ui.model.json.JSONModel({ results });
+                        oView.setModel(oJsonModel, "ModelContract");
+                        oView.setBusy(false);
                     },
-                    error: function () {
-                        MessageToast.show("Error al enviar los datos.");
+                    error: function (oError) {
+
+                        oView.setBusy(false);
                     }
                 });
+
             },
 
 
@@ -171,17 +287,17 @@ sap.ui.define([
                 if (!oDate) return "";
 
                 const iYear = oDate.getFullYear();
-                const iMonth = oDate.getMonth() + 1; // Meses van de 0 a 11
+                const iMonth = oDate.getMonth() + 1;
                 const iDay = oDate.getDate();
 
                 const sMonth = iMonth < 10 ? "0" + iMonth : iMonth;
                 const sDay = iDay < 10 ? "0" + iDay : iDay;
 
-                return `${iYear}${sMonth}${sDay}`; // yyyyMMdd
+                return `${iYear}${sMonth}${sDay}`;
             }
 
             ,
-            // Función reutilizable
+
             _enviarContratos: function (sNavEntity, sSuccessMessage, sErrorMessage) {
                 const oView = this.getView();
 
@@ -192,7 +308,8 @@ sap.ui.define([
                 var that = this;
 
                 if (aSelectedIndices.length === 0) {
-                    MessageBox.warning("Debe seleccionar al menos un contrato.");
+                 
+                    MessageBox.warning(this._getText("msg.warning.seleccionarContrato"));
                     return;
                 }
 
@@ -211,6 +328,7 @@ sap.ui.define([
                         FechaEmRes: oRowData.FechaEmRes,
                         Periodo: oRowData.Periodo,
                         Solicitante: oRowData.Solicitante,
+
                         EjercicioDocSellos: oRowData.EjercicioDocSellos,
                         FechaDocSellos: oRowData.FechaDocSellos,
                         ResEnvEverillion: oRowData.ResEnvEverillion,
@@ -226,16 +344,16 @@ sap.ui.define([
                 oPayload[sNavEntity] = aContratos;
                 that._pdfYaGenerado = false;
 
-                console.log(">>> Se llamó a oModel.create <<<");
+
 
                 oModel.create("/HeaderSet", oPayload, {
                     success: function (oData) {
-                        console.log(">>> Entró a success <<<");
-                             
+
+
                         oView.setBusy(false);
 
                         if (that._pdfYaGenerado) {
-                            console.warn(">>> Success duplicado, cancelado para evitar PDFs repetidos");
+
                             return;
                         }
                         that._pdfYaGenerado = true;
@@ -249,8 +367,7 @@ sap.ui.define([
                         ) {
                             const results = oData.HeaderToDescargarPdfNav.results;
 
-                            console.log(">>> Resultados recibidos (PDF):", results);
-                            console.log(">>> Cantidad real recibida:", results.length);
+
 
                             const clavesUnicas = new Set();
 
@@ -266,17 +383,17 @@ sap.ui.define([
                                     if (!clavesUnicas.has(clave)) {
                                         clavesUnicas.add(clave);
 
-                                        console.log(`Generando PDF #${i + 1} -> Nombre: ${nombrePdf}`);
+
                                         that._crearPdf(nombrePdf, pdfBase64);
 
                                         if (!mensaje) {
                                             mensaje = mensajeItem;
                                         }
                                     } else {
-                                        console.warn(`PDF duplicado evitado para: ${nombrePdf}`);
+
                                     }
                                 } else {
-                                    console.warn(`PDF inválido o vacío en índice ${i}`);
+
                                 }
                             }
                         } else if (
@@ -291,7 +408,7 @@ sap.ui.define([
                             Array.isArray(oData.HeaderToEnviarEverillionNav.results) &&
                             oData.HeaderToEnviarEverillionNav.results[0]
                         ) {
-                            mensaje = oData.HeaderToEnviarEverillionNav.results[0].Mensaje;
+                            mensaje = oData.HeaderToEnviarEverillionNav.results[0].Mensajes;
 
                         } else if (
                             oData.HeaderToEnviarPDCNav &&
@@ -318,13 +435,14 @@ sap.ui.define([
                         if (mensaje) {
                             sap.m.MessageBox.information(mensaje);
                         } else {
-                            sap.m.MessageBox.information("Acción completada, pero no se devolvió un mensaje.");
+                           
+                            sap.m.MessageBox.information(this._getText("msg.information.oDataCall"));
                         }
                     },
 
                     error: function (oError) {
-                        MessageBox.error("Ocurrió un error al procesar la solicitud.");
-                        console.error(oError);
+                        MessageBox.error(this._getText("msg.error.errorSolicitud"));
+
                     }
                 });
             },
@@ -334,12 +452,13 @@ sap.ui.define([
 
 
                 if (!pdfBase64 || typeof pdfBase64 !== "string" || pdfBase64.trim() === "") {
-                    sap.m.MessageBox.error("El contenido del PDF está vacío o es inválido.");
+                   
+                    MessageBox.error(this._getText("msg.error.errorContenidoPDF"));
                     return;
                 }
 
                 try {
-                    // Decodificar base64 a binario
+
                     const byteCharacters = atob(pdfBase64);
                     const byteNumbers = new Array(byteCharacters.length);
                     for (let i = 0; i < byteCharacters.length; i++) {
@@ -349,13 +468,13 @@ sap.ui.define([
                     const byteArray = new Uint8Array(byteNumbers);
                     const blob = new Blob([byteArray], { type: 'application/pdf' });
 
-                    // Nombre del archivo, asegurando .pdf
+
                     let safeName = nombrePdf && typeof nombrePdf === "string" ? nombrePdf.trim() : "archivo.pdf";
                     if (!safeName.toLowerCase().endsWith(".pdf")) {
                         safeName += ".pdf";
                     }
 
-                    // Crear enlace para descarga
+
                     const link = document.createElement("a");
                     link.href = URL.createObjectURL(blob);
                     link.download = safeName;
@@ -365,8 +484,8 @@ sap.ui.define([
                     URL.revokeObjectURL(link.href);
 
                 } catch (err) {
-                    console.error("Error al crear el PDF:", err);
-                    sap.m.MessageBox.error("No se pudo generar el archivo PDF.");
+
+                    MessageBox.error(this._getText("msg.error.errorArchivoPdf"));
                 }
 
 
@@ -375,13 +494,14 @@ sap.ui.define([
 
 
 
-            // Botones que usan la función reutilizable
+
             onGenerarResumen: function () {
                 this._confirmAndExecute("¿Está seguro de generar el resumen?", function () {
                     this._enviarContratos(
                         "HeaderToGenerarResumenNav",
-                        "Resumen generado correctamente.",
-                        "Error al generar el resumen."
+                        this._getText("msg.success.generarResumen"),
+                        this._getText("msg.error.generarResumen")
+                     
                     );
                 }.bind(this));
             },
@@ -390,8 +510,8 @@ sap.ui.define([
                 this._confirmAndExecute("¿Está seguro de enviar a Everillion?", function () {
                     this._enviarContratos(
                         "HeaderToEnviarEverillionNav",
-                        "Enviado a Everillion correctamente.",
-                        "Error al enviar a Everillion."
+                        this._getText("msg.success.everillion"),
+                        this._getText("msg.error.everillion")
                     );
                 }.bind(this));
             },
@@ -400,8 +520,8 @@ sap.ui.define([
                 this._confirmAndExecute("¿Está seguro de enviar a PDC?", function () {
                     this._enviarContratos(
                         "HeaderToEnviarPDCNav",
-                        "Enviado a PDC correctamente.",
-                        "Error al enviar a PDC."
+                        this._getText("msg.success.pdc"),
+                        this._getText("msg.error.pdc")
                     );
                 }.bind(this));
             },
@@ -410,8 +530,8 @@ sap.ui.define([
                 this._confirmAndExecute("¿Está seguro de enviar por mail?", function () {
                     this._enviarContratos(
                         "HeaderToEnviarPorMailNav",
-                        "Enviado por mail correctamente.",
-                        "Error al enviar por mail."
+                        this._getText("msg.success.mail"),
+                        this._getText("msg.error.mail")
                     );
                 }.bind(this));
             },
@@ -420,8 +540,8 @@ sap.ui.define([
                 this._confirmAndExecute("¿Está seguro de cancelar el resumen?", function () {
                     this._enviarContratos(
                         "HeaderToCancelarResumenNav",
-                        "Resumen cancelado correctamente.",
-                        "Error al cancelar el resumen."
+                        this._getText("msg.success.cancelarResumen"),
+                        this._getText("msg.error.cancelarResumen")
                     );
                 }.bind(this));
             },
@@ -430,8 +550,8 @@ sap.ui.define([
                 this._confirmAndExecute("¿Está seguro de descargar el PDF?", function () {
                     this._enviarContratos(
                         "HeaderToDescargarPdfNav",
-                        "Resumen generado correctamente.",
-                        "Error al generar el resumen."
+                        this._getText("msg.success.generarPdf"),
+                        this._getText("msg.error.generarPdf")
                     );
                 }.bind(this));
             },
@@ -451,138 +571,149 @@ sap.ui.define([
                 );
             },
 
-            onValueHelpCliente: function () {
+            onValueHelpCliente: function (oEvent) {
+                var sInputValue = oEvent.getSource().getValue();
                 var oView = this.getView();
 
-                if (!this._oValueHelpDialog) {
-                    Fragment.load({
+                if (!this._pValueHelpClienteDialog) {
+                    this._pValueHelpClienteDialog = Fragment.load({
+                        id: "idVHCliente",
                         name: "ypf.zz1com741lm4free2.view.ValueHelpClientes",
                         controller: this
-                    }).then(function (oFragment) {
-                        this._oValueHelpDialog = oFragment;
-                        oView.addDependent(oFragment);
+                    }).then(function (oDialog) {
+                        oView.addDependent(oDialog);
+                        oDialog.setModel(this.getView().getModel("VHModel"));
 
-                        this._oValueHelpDialog.setModel(this.getView().getModel());
 
-                        this._bindValueHelpData();
-                        this._oValueHelpDialog.open();
+                        oDialog.attachConfirm(this._handleValueHelpClienteClose, this);
+                        oDialog.attachSearch(this._handleValueHelpClienteSearch, this);
+
+                        return oDialog;
                     }.bind(this));
-                } else {
-                    this._bindValueHelpData();
-                    this._oValueHelpDialog.open();
                 }
-            },
 
-            _bindValueHelpData: function () {
-                // Asegúrate de ajustar el path y el model OData
-                this._oValueHelpDialog.bindAggregation("items", {
-                    path: "/VHClientesSet",
-                    template: new sap.m.StandardListItem({
-                        title: "{Clientes}",
-                        description: "{Descripcion}"
-                    })
+                this._pValueHelpClienteDialog.then(function (oDialog) {
+                    var oBinding = oDialog.getBinding("items");
+                    if (oBinding) {
+                        oBinding.filter([
+                            new sap.ui.model.Filter("Clientes", sap.ui.model.FilterOperator.Contains, sInputValue)
+                        ]);
+                    }
+                    oDialog.open(sInputValue);
                 });
             },
-            onValueHelpContrato: function () {
+
+
+            onValueHelpContrato: function (oEvent) {
+                var sInputValue = oEvent.getSource().getValue();
                 var oView = this.getView();
-                if (!this._oVHDContrato) {
-                    this._oVHDContrato = sap.ui.xmlfragment("ypf.zz1com741lm4free2.view.ValueHelpContrato", this);
-                    oView.addDependent(this._oVHDContrato);
+
+
+                if (!this._pValueHelpContratoDialog) {
+                    this._pValueHelpContratoDialog = Fragment.load({
+                        id: "idVHContrato",
+                        name: "ypf.zz1com741lm4free2.view.ValueHelpContrato",
+                        controller: this
+                    }).then(function (oDialog) {
+                        oView.addDependent(oDialog);
+
+
+                        oDialog.setModel(this.getView().getModel("VHModel"));
+
+
+                        oDialog.attachConfirm(this._handleValueHelpContratoClose, this);
+                        oDialog.attachSearch(this._handleValueHelpContratoSearch, this);
+
+                        return oDialog;
+                    }.bind(this));
                 }
 
-                // Set el modelo si no está seteado dentro del fragmento
-                this._oVHDContrato.setModel(this.getView().getModel());
 
-                this._oVHDContrato.open();
+                this._pValueHelpContratoDialog.then(function (oDialog) {
+                    var oBinding = oDialog.getBinding("items");
+                    if (oBinding) {
+                        oBinding.filter([
+                            new sap.ui.model.Filter("Contrato", sap.ui.model.FilterOperator.Contains, sInputValue)
+                        ]);
+                    }
+
+                    oDialog.open(sInputValue);
+                });
             },
-            onValueHelpContratoConfirm: function (oEvent) {
+            onValueHelpCancel: function (oEvent) {
+
+                var aSelectedItems = oEvent.getParameter("selectedItems");
+                var oMultiInput = this.byId("multiInputCliente");
+
+                if (aSelectedItems && aSelectedItems.length > 0 && oMultiInput) {
+                    var aExistingTokens = oMultiInput.getTokens().map(function (token) {
+                        return token.getKey();
+                    });
+
+                    aSelectedItems.forEach(function (oItem) {
+                        var sKey = oItem.getTitle();
+                        var sText = oItem.getDescription();
+
+                        if (!aExistingTokens.includes(sKey)) {
+                            oMultiInput.addToken(new sap.m.Token({
+                                key: sKey,
+                                text: sKey + " - " + sText
+                            }));
+                        }
+                    });
+                }
+
+
+            },
+
+
+
+            onValueHelpContratoCancel: function (oEvent) {
                 var aSelectedItems = oEvent.getParameter("selectedItems");
                 var oMultiInput = this.byId("inputContrato");
 
-                oMultiInput.removeAllTokens();
-
-                aSelectedItems.forEach(function (oItem) {
-                    var oToken = new sap.m.Token({
-                        key: oItem.getTitle(),
-                        text: oItem.getTitle() + " - " + oItem.getDescription()
+                if (aSelectedItems && aSelectedItems.length > 0 && oMultiInput) {
+                    var aExistingTokens = oMultiInput.getTokens().map(function (token) {
+                        return token.getKey();
                     });
-                    oMultiInput.addToken(oToken);
-                });
 
-                // Ajuste del ancho basado en la cantidad de tokens
-                var iTokenCount = aSelectedItems.length;
-                var newWidth = Math.min(100, 20 + iTokenCount * 15); // Ejemplo: 20% base + 15% por token
-                oMultiInput.setWidth(newWidth + "%");
-            },
-            onValueHelpContratoCancel: function () {
-                if (this._oVHDContrato) {
-                    this._oVHDContrato.close();
+                    aSelectedItems.forEach(function (oItem) {
+                        var sKey = oItem.getTitle();
+                        var sText = oItem.getDescription();
+
+                        if (!aExistingTokens.includes(sKey)) {
+                            oMultiInput.addToken(new sap.m.Token({
+                                key: sKey,
+                                text: sKey + " - " + sText
+                            }));
+                        }
+                    });
                 }
+
             },
             onSearchContrato: function (oEvent) {
-                var sQuery = oEvent.getParameter("value");
-                var oFilter = new sap.ui.model.Filter("Contrato", sap.ui.model.FilterOperator.Contains, sQuery);
-
-                var oDialog = oEvent.getSource();
-                var oBinding = oDialog.getBinding("items");
-
-                if (oBinding) {
-                    oBinding.filter([oFilter]);
-                }
+                var sValue = oEvent.getParameter("value");
+                var oFilter = new sap.ui.model.Filter(
+                    "Contrato",
+                    sap.ui.model.FilterOperator.Contains,
+                    sValue
+                );
+                oEvent.getSource().getBinding("items").filter([oFilter]);
             },
 
             onSearch: function (oEvent) {
-                var sQuery = oEvent.getParameter("value");
-                var oDialog = oEvent.getSource();
-                var oModel = this.getView().getModel();
-
-                var aFilters = [];
-                if (sQuery) {
-                    aFilters.push(new sap.ui.model.Filter("Clientes", sap.ui.model.FilterOperator.Contains, sQuery));
-                }
-
-                oModel.read("/VHClientesSet", {
-                    filters: aFilters,
-                    success: function (oData) {
-                        var aItems = oData.results.map(function (item) {
-                            return new sap.m.StandardListItem({
-                                title: item.Clientes,
-                                description: item.Descripcion,
-                                icon: "sap-icon://value-help"
-                            });
-                        });
-                        oDialog.destroyItems(); // Limpia los items previos
-                        aItems.forEach(function (item) {
-                            oDialog.addItem(item);
-                        });
-                    },
-                    error: function () {
-                        sap.m.MessageToast.show("Error al buscar clientes");
-                    }
-                });
-            },
-
-            onValueHelpConfirm: function (oEvent) {
-                var aSelectedItems = oEvent.getParameter("selectedItems");
-                var oMultiInput = this.byId("multiInputCliente"); // ID del MultiInput
-
-                oMultiInput.removeAllTokens(); // Opcional: limpiar antes
-
-                if (aSelectedItems && oMultiInput) {
-                    aSelectedItems.forEach(function (oItem) {
-                        var sKey = oItem.getTitle(); // Ej: Código de cliente
-                        var sText = oItem.getDescription(); // Ej: Nombre
-
-                        var oToken = new sap.m.Token({
-                            key: sKey,
-                            text: sKey + " - " + sText
-                        });
-
-                        oMultiInput.addToken(oToken);
-                    });
-                }
-
+                var sValue = oEvent.getParameter("value");
+                var oFilter = new sap.ui.model.Filter(
+                    "Clientes",
+                    sap.ui.model.FilterOperator.Contains,
+                    sValue
+                );
+                oEvent.getSource().getBinding("items").filter([oFilter]);
             }
+
+
+
+
 
         });
     });
